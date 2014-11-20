@@ -1,0 +1,77 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.0.1"
+
+    defaultConfig {
+        applicationId "de.stelle_beratung.androidannotationslibraryexample"
+        minSdkVersion 15
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs.processResources.manifestFile
+        resourcePackageName android.defaultConfig.applicationId
+    }
+}
+
+dependencies {
+    compile project(":mylibrary")
+
+    apt "org.androidannotations:androidannotations:3.2+"
+    compile 'org.androidannotations:androidannotations-api:3.2+'
+
+
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile 'com.android.support:appcompat-v7:21.0.0'
+}
+//
+//def getSourceSetName(variant) {
+//    return new File(variant.dirName).getName();
+//}
+//android.applicationVariants.all {
+//    variant ->
+//    def aptOutputDir = project.file("${project.buildDir}/source/apt/")
+//    def aptOutput = new File(aptOutputDir, variant.dirName)
+//    println "****************************"
+//    println "variant: ${variant.name}"
+//    println "manifest:  ${variant.outputs.processResources.manifestFile}"
+//    println "aptOutput:  ${aptOutput}"
+//    println "****************************"
+//    android.sourceSets[getSourceSetName(variant)].java.srcDirs += aptOutput.getPath()
+//    variant.javaCompile.options.compilerArgs += [
+//            '-processorpath', configurations.apt.getAsPath(),
+//            '-AandroidManifestFile=' + variant.outputs.processResources.manifestFile,
+//            '-s', aptOutput
+//    ]
+//    variant.javaCompile.source = variant.javaCompile.source.filter {
+//        p ->
+//        return !p.getPath().startsWith(aptOutputDir.getPath())
+//    }
+//    variant.javaCompile.doFirst {
+//        aptOutput.mkdirs()
+//    }
+//}
